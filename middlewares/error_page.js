@@ -5,10 +5,10 @@ exports.errorPage = function(req, res, next) {
 
     res.renderError = function (error, statusCode) {
         if (statusCode === undefined) {
-          statusCode = 400;
+            statusCode = 400;
         }
         return res.status(statusCode).render('notify/notify', { error: error });
-      };
+    };
 
     next();
 }

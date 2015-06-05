@@ -4,10 +4,10 @@
  * MIT Licensed
  */
 
- var express = require("express");
- var site = require("./controllers/site")
+var express = require("express");
+var site = require("./controllers/site")
 
- var router           = express.Router();
+var router           = express.Router();
 
 // home page
 router.get('/', site.index);

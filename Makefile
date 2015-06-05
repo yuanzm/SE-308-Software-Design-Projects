@@ -7,6 +7,7 @@ all: test
 
 install:
 	@npm install $(NPM_REGISTRY)
+	
 pretest:
 	@if ! test -f config.js; then \
 		cp config.default.js config.js; \
