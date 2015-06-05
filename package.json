@@ -1,0 +1,34 @@
+{
+  "name": "SE-308-Software-Design-Projects",
+  "version": "0.0.1",
+  "description": "project for course SE-308",
+  "main": "app.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yuanzm/SE-308-Software-Design-Projects.git"
+  },
+  "engines": {
+    "node": "0.12.x"
+  },
+   "dependencies": {
+
+  },
+    "devDependencies": {
+  },
+  "keywords": [
+    "[\"node\"",
+    "\"chat\"]"
+  ],
+  "author": "yuanzm",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yuanzm/SE-308-Software-Design-Projects/issues"
+  },
+  "homepage": "https://github.com/yuanzm/SE-308-Software-Design-Projects",
+  "scripts": {
+    "test": "make test"
+  }
+}
