@@ -14,6 +14,11 @@ mongoose.connect(config.db, function(err) {
 // models
 require('./user.js');
 require('./comment.js');
+require('./group.js');
+require('./message.js');
+require('./notification.js');
+require('./topic.js');
+require('./topic_collect.js');
 
 exports.User = mongoose.model('User');
 exports.Comment = mongoose.model('Comment');

@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
-var var BaseModel = require("./base_model");
+var BaseModel = require("./base_model");
 
 var NotificationScema = new Schema({
     type: {type: String},

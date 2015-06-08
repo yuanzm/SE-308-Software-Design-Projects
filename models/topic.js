@@ -7,14 +7,14 @@ var _         = require('lodash');
 
 var TopicSchema = new Schema({
     title: {type: String},
-    content: {typeL String},
+    content: {type: String},
     author_id: {type: ObjectId},
 
     comment_count: {type: Number, default: 0},
     visit_count: {type: Number, default: 0},
     create_at: {type: Date, default: Date.now},
     update_at: {type: Date, default: Date.now},
-    deleted: {type: Boolean, default: false}
+    deleted: {type: Boolean, default: false},
     tab: {type: String},
     collect_count: {type: Number}
 });
@@ -36,4 +36,4 @@ TopicSchema.virtual('tabName').get(function() {
     }
 });
 
-mongoose.model('Topic', Topic);
+mongoose.model('Topic', TopicSchema);
