@@ -133,3 +133,9 @@ exports.login = function(req, res, next) {
         authMiddleWare.gen_session(user, res).status(200).json(data);
     })
 }
+
+exports.signOut = function(req, res, next) {
+    req.session.destroy();
+    res.clearCookie(config.auth_cookie_name, { path: '/' });
+    res.redirect('/');
+}

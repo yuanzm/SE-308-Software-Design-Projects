@@ -105,5 +105,16 @@ describe('test/controllers/sign.test.js', function() {
                 done();
             })
         })
+    });
+    
+    describe('sign out', function() {
+        it('should sign out successful', function(done) {
+            request.post('/signout')
+            .set('Cookie', config.auth_cookie_name + ':something;')
+            .expect(302, function (err, res) {
+                res.headers['set-cookie'].should.not.containEql(':something');
+                done(err);
+            });
+        })
     })
 });
