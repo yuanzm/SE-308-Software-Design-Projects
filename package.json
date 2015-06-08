@@ -27,6 +27,7 @@
     "eventproxy": "0.3.1",
     "express": "4.9.5",
     "express-session": "1.9.1",
+    "ioredis": "^1.4.0",
     "loader": "0.1.4",
     "lodash": "3.6.0",
     "markdown-it": "3.0.3",

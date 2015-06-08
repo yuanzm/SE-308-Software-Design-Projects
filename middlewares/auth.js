@@ -12,4 +12,10 @@ function gen_session(user, res) {
     return res;
 }
 
+exports.userRequired = function(req, res, next) {
+    if (!req.session || !req.session.user) {
+        return res.status(403).send('forbidden!');
+    }
+};
+
 exports.gen_session = gen_session;

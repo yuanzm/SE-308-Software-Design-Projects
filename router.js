@@ -5,9 +5,18 @@
  */
 
 var express = require("express");
+var auth = require('./middlewares/auth');
+var limit = require('./middlewares/limit');
 var site = require("./controllers/site");
 var sign = require("./controllers/sign");
 var user = require("./controllers/user");
+var message = require('./controllers/message');
+var topic = require('./controllers/topic');
+var comment = require('./controllers/comment');
+var search = require('./controllers/search');
+var staticController = require('./controllers/static');
+var config = require('./config');
+
 var router           = express.Router();
 
 // home page
@@ -23,16 +32,16 @@ router.post('/signout', sign.signOut)
 // 用户
 router.get('/user/:name', user.index);
 router.get('/user/:name/settging', user.showSetting);
-router.post('/user/:name/settging', user.settgin);
+router.post('/user/:name/settging', user.setting);
 router.get('/user/:name/collections', user.listCollectedTopics);
 router.get('/user/:name/topics', user.listTopics);
 router.get('/user/:name/comments', user.listComments);
 
 // 消息
-router.get('/my/messages', auth.userRequired, messages.index);
+router.get('/my/messages', auth.userRequired, message.index);
 
 // 话题
-router.get('/topic/create', auth.userRequired, topic.cerate)
+router.get('/topic/create', auth.userRequired, topic.create)
 router.get('/topic/:tid', topic.index);
 router.get('/topic/:tid/edit', auth.userRequired, topic.showEdit);
 router.post('/topic/:tid/delete', auth.userRequired, topic.delete)
@@ -48,9 +57,5 @@ router.get('/search', search.index);
 
 // 静态页面
 router.get('/about', staticController.about);
-router.get('/faq', staticController.faq);
-router.get('/getstart', staticController.getstart);
-router.get('/robots.txt', staticController.robots);
-router.get('/api', staticController.api);
 
 module.exports = router;
