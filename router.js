@@ -31,8 +31,8 @@ router.post('/signout', sign.signOut)
 
 // 用户
 router.get('/user/:name', user.index);
-router.get('/user/:name/settging', user.showSetting);
-router.post('/user/:name/settging', user.setting);
+router.get('/setting', user.showSetting);
+router.post('/setting', user.setting);
 router.get('/user/:name/collections', user.listCollectedTopics);
 router.get('/user/:name/topics', user.listTopics);
 router.get('/user/:name/comments', user.listComments);

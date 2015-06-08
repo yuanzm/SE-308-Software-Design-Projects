@@ -6,7 +6,7 @@ exports.getUserByLoginName = function(loginname, callback) {
 }
 
 exports.getUserById = function(id, callback) {
-    User.findOne({"id": id}, callback);
+    User.findOne({"_id": id}, callback);
 }
 
 exports.getUserByEmail = function(email, callback) {

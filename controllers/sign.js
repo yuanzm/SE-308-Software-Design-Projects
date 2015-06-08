@@ -114,9 +114,9 @@ exports.login = function(req, res, next) {
         if (user.password !== passHash) {
             return ep.emit('loginname-err', '用户密码错误');
         }
-        // // 存储session cookie
-        // authMiddleWare.gen_session(user, res);
-              //check at some page just jump to home page
+        // 存储session cookie
+        authMiddleWare.gen_session(user, res);
+        // check at some page just jump to home page
         var refer = req.session._loginReferer || '/';
         for (var i = 0, len = notJump.length; i !== len; ++i) {
             if (refer.indexOf(notJump[i]) >= 0) {

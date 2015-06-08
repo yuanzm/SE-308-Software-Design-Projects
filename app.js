@@ -17,9 +17,9 @@ var errorhandler        = require('errorhandler');
 var session             = require('express-session');
 var passport            = require("passport");
 // require('./middlewares/mongoose_log'); // 打印 mongodb 查询日志
-// require('./models');
+require('./models');
 var router              = require("./router")
-// var auth                     = require('./middlewares/auth');
+var auth                     = require('./middlewares/auth');
 var errorPageMiddleware = require("./middlewares/error_page");
 // var proxyMiddleware          = require('./middlewares/proxy');
 var RedisStore          = require('connect-redis')(session);
@@ -75,8 +75,8 @@ app.use('/public', express.static(staticDir));
 // 每日访问限制
 
 app.use(require('response-time')());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({limit: '1mb'}));
+app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }));
 app.use(require('method-override')());
 app.use(require('cookie-parser')(config.session_secret));
 app.use(compress());
@@ -92,11 +92,20 @@ app.use(session({
 
 app.use(passport.initialize());
 
-app.use('/', router);
-
 // custom middleware
-// app.use(auth.authUser);
+app.use(auth.authUser);
 // app.use(auth.blockUser());
+
+if (!config.debug) {
+  app.use(function (req, res, next) {
+    if (req.path.indexOf('/api') === -1) {
+      csurf()(req, res, next);
+      return;
+    }
+    next();
+  });
+  app.set('view cache', true);
+}
 
 // set static, dynamic helpers
 _.extend(app.locals, {

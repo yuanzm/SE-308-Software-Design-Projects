@@ -4,15 +4,18 @@ var BaseModel = require("./base_model");
 
 
 var UserSchema = new Schema({
-	name: {type: String},
-	loginname: {type: String},
-	password: {type: String},
-	email: {type: String},
+    loginname: {type: String},
+    password: {type: String},
+    email: {type: String},
+    
     avatar: {type: String},
     location: {type: String},
     signature: {type: String},
     male: {type: String},
-    
+    wechat: {type: String},
+    qq: {type: String},
+	name: {type: String},
+
     score: {type: Number, default: 0},
     topic_count: {type: Number, default: 0},
     comment_count: {type: Number,default: 0},
