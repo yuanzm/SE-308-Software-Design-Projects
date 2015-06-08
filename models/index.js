@@ -1,3 +1,7 @@
+/*
+ * models出口文件
+ */
+
 var mongoose = require('mongoose');
 var config = require('../config.js');
 
@@ -9,5 +13,12 @@ mongoose.connect(config.db, function(err) {
 
 // models
 require('./user.js');
+require('./comment.js');
 
 exports.User = mongoose.model('User');
+exports.Comment = mongoose.model('Comment');
+exports.Group = mongoose.model('Group');
+exports.Message = mongoose.model('Message');
+exports.Notification = mongoose.model('Notification');
+exports.Topic = mongoose.model('Topic');
+exports.TopicCollect = mongoose.model('TopicCollect');
