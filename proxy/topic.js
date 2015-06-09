@@ -13,11 +13,11 @@ exports.getTopicById = function(id, callback) {
 	var ep = new eventproxy();
 	ep.fail(callback);
 
-	ep.on('author', 'topic', 'last-comment', function(author, topic, lastComment) {
+	ep.all('author', 'topic', function(author, topic) {
 		if (!topic) {
-			callback(null, null, null, null);
+			callback(null, null, null);
 		} else {
-			callback(null, topic, author, lastComment);
+			callback(null, topic, author);
 		}
 	})
 
@@ -26,13 +26,11 @@ exports.getTopicById = function(id, callback) {
 		if (!topic) {
 			ep.emit('author', null);
 			ep.emit('topic', null);
-			ep.emit('last-replay', null);
 		}
 		ep.emit('topic', topic);
-
-		UserProxy.getUserById({'_id': topic.author_id}, eq.done('author'));
-
-		
+		UserProxy.getUserById({'_id': topic.author_id}, function(err, user) {
+			ep.emit('author', user);
+		});
 	});
 };
 

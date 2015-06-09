@@ -48,7 +48,8 @@ router.get('/topic/:tid/edit', auth.userRequired, topic.showEdit);
 router.post('/topic/:tid/delete', auth.userRequired, topic.delete)
 
 // 评论
-router.post('/:tid/comment', auth.userRequired, limit.peruserperday('create_reply', config.create_reply_per_day), comment.add);
+// limit.peruserperday('create_reply', config.create_reply_per_day)
+router.post('/:tid/comment', auth.userRequired, comment.add);
 router.post('/comment/:cid/edit', auth.userRequired, comment.update); // 修改某评论
 router.post('/comment/:cid/delete', auth.userRequired, comment.delete); // 删除某评论
 router.post('/comment/:cid/up', auth.userRequired, comment.up); // 为评论点赞
