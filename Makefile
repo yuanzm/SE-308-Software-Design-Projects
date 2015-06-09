@@ -30,7 +30,7 @@ test: install pretest
 test-cov cov: install pretest
 	@NODE_ENV=test node \
 		node_modules/.bin/istanbul cover --preserve-comments \
-		./node_modules/.bin/_mocha \
+		./node_modules/mocha/bin/_mocha \
 		-- \
 		-r should \
 		-r test/env \
