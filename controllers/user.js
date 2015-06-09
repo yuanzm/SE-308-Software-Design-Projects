@@ -31,6 +31,9 @@ exports.setting = function(req, res, next) {
     var signature = validator.trim(req.body.signature);
     signature = validator.escape(signature);
     User.getUserById(req.session.user._id, ep.done(function(user) {
+        if (!user) {
+            return next();
+        }
     	user.male = male;
     	user.wechat = wechat;
     	user.qq = qq;

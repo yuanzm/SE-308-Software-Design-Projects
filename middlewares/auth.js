@@ -21,6 +21,7 @@ exports.userRequired = function(req, res, next) {
     if (!req.session || !req.session.user) {
         return res.status(403).send('forbidden!');
     }
+    next();
 };
 
 exports.authUser = function(req, res, next) {
@@ -41,7 +42,6 @@ exports.authUser = function(req, res, next) {
         user = res.locals.current_user = res.session.user = new UserModel(user);
         next();
     });
-
     if (req.session.user) {
         ep.emit('get_user', req.session.user);
     } else {

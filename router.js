@@ -32,7 +32,7 @@ router.post('/signout', sign.signOut)
 // 用户
 router.get('/user/:name', user.index);
 router.get('/setting', user.showSetting);
-router.post('/setting', user.setting);
+router.post('/setting', auth.userRequired, user.setting);
 router.get('/user/:name/collections', user.listCollectedTopics);
 router.get('/user/:name/topics', user.listTopics);
 router.get('/user/:name/comments', user.listComments);
@@ -42,7 +42,7 @@ router.get('/my/messages', auth.userRequired, message.index);
 
 // 话题
 router.get('/topic/create', auth.userRequired, topic.showCreate);
-router.post('/topic/create', topic.create);
+router.post('/topic/create', auth.userRequired, topic.create);
 router.get('/topic/:tid', topic.index);
 router.get('/topic/:tid/edit', auth.userRequired, topic.showEdit);
 router.post('/topic/:tid/delete', auth.userRequired, topic.delete)

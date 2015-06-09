@@ -6,15 +6,6 @@ var ready = require('ready');
 function randomInit() {
 	return (Math.random() * 10000).toFixed(0);
 }
-// exports.newAndSave = function(loginname, password, email, avatar, callback) {
-//     var user = new User();
-//     user.loginname = loginname;
-//     user.password  = password;
-//     user.email     = email;
-//     user.avatar    = avatar
-
-//     user.save(callback);
-// }
 
 var createUser = exports.createUser = function(callback) {
 	var key = new Date().getTime() + '_' + randomInit();

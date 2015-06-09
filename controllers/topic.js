@@ -14,11 +14,11 @@ exports.create = function(req, res, next) {
 
 	var title = validator.trim(req.body.title);
 	title = validator.escape(title);
-	var content = validator.trim(validator);
+	var content = validator.trim(req.body.content);
 	content = validator.escape(content);
 	var author_id = req.session.user._id;
 
-	ep.on('create-err', function(errMessage) {
+	ep.on('create_err', function(errMessage) {
 		res.status(422);
 		data = {
 			errCode: 422,
@@ -27,44 +27,34 @@ exports.create = function(req, res, next) {
 		res.json(data);
 	});
 
-	if([title, content].some(function(item) {return item === ''})) {
-		return ep.eimt('create-err', '标题或内容不能为空');
+	if ([title, content].some(function(item) {return item === ''})) {
+		return ep.emit('create_err', "内容或标题不能为空");
 	}
-	res.status(200);
-	data = {
-		errCode: 200,
-		message: '发表成功'
-	}
-	// req.session.user = user;
-	res.json(data);
 
-	// Topic.newAndSave(title, content, author_id, function(err, topic) {
-		// if (err) {
-			// return next(err);
-		// }
-		// User.getUserById(author_id, function(err, user) {
-		// 	if (err) {
-		// 		return next(err);
-		// 	}
-		// 	if(user) {
-		// 		console.log('00000000000000000000000000000')
-		// 	}
-		// 	user.topic_count += 1;
-		// 	user.score += 5;
-		// 	user.save(function(err) {
-		// 		if (err) {
-		// 			return next(err);
-		// 		}
-		// 		res.status(200);
-		// 		data = {
-		// 			errCode: 200,
-		// 			message: '发表成功'
-		// 		}
-		// 		req.session.user = user;
-		// 		res.json(data);
-		// 	})
-		// });
-	// })
+	Topic.newAndSave(title, content, author_id, function(err, topic) {
+		if (err) {
+			return next(err);
+		}
+		User.getUserById(author_id, function(err, user) {
+			if (err) {
+				return next(err);
+			}
+			user.topic_count += 1;
+			user.score += 5;
+			user.save(function(err) {
+				if (err) {
+					return next(err);
+				}
+				res.status(200);
+				data = {
+					errCode: 200,
+					message: '发表成功'
+				}
+				req.session.user = user;
+				res.json(data);
+			})
+		});
+	})
 
 };
 

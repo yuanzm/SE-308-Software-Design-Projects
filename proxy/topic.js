@@ -1,5 +1,5 @@
 var models = require('../models');
-var Topic = models.User;
+var Topic = models.Topic;
 
 exports.getTopicById = function(id, callback) {
 
