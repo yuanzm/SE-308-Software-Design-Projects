@@ -8,6 +8,12 @@ exports.showCreate = function(req, res) {
 
 };
 
+/*
+ * 新建一条话题
+ * - 保存一条话题到数据库
+ * - 用户的分数加5
+ * - 用户的话题数量加1
+ */
 exports.create = function(req, res, next) {
 	var ep = new eventproxy();
 	ep.fail(next);
@@ -66,11 +72,57 @@ exports.showEdit = function(req, res, next) {
 
 };
 
-exports.delete = function(req, res, next) {
+/*
+ * 删除一条话题
+ * - 只有用户本身才能删除帖子
+ * - 帖子的删除属性设置为真
+ * - 用户的帖子数量减1
+ */
+exports.deleteTopic = function(req, res, next) {
 	var ep = new eventproxy();
 	ep.fail(next);
 
-	var topicId = validator.trim(req.body.tid);
+	var tid = validator.trim(req.params.tid);
+	var user_id = req.session.user._id;
+
+	ep.on('delete-err', function(status, errMessage) {
+		res.status(status);
+		data = {
+			errCode: status,
+			message: errMessage
+		};
+
+		res.json(data);
+	}) 
+
+	if (tid.length != 24) {
+		return ep.emit('delete-err', 410, '帖子不存在或者已经删除');
+	}
+
+	Topic.getTopicById(tid, function(err, topic, author) {
+		var proxy = new eventproxy();
+		if (!topic) {
+			return ep.emit('delete-err', 410, '帖子不存在或者已经删除');
+		}
+
+		if (!(topic.author_id.equals(user_id)) && !req.session.user.is_admin) {
+			return ep.emit('delete-err', 403, '没有权限删除该帖子');
+		}
+
+		proxy.all('update-user', 'update-topic', function() {
+			res.status(200);
+			data = {
+				errCode: 200,
+				message: '删除成功'
+			}
+			res.json(data);
+		})
+		topic.deleted = true;
+		topic.save(proxy.done('update-topic'));
+
+		author.topic_count -= 1;
+		author.save(proxy.done('update-user'));
+	});
 };
 
 /*

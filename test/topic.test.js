@@ -65,6 +65,41 @@ describe('test/controllers/topic.test.js', function() {
 				done();
 			})
         })
+    });
+
+    describe('topic delete', function() {
+    	it('should not delete topic if the operator is not the author of topic', function(done) {
+    		request.post('/topic/' + support.topic._id + '/delete')
+            .set('Cookie', support.normalUser2Cookie)
+            .end(function(err, res) {
+            	should.not.exist(err);
+            	res.status.should.equal(403);
+            	res.body.message.should.equal('没有权限删除该帖子');
+            	done();
+            })
+    	});
+
+    	it('should delete the topic if it is not exist', function(done) {
+    		request.post('/topic/' + 'testtid'  + '/delete')
+            .set('Cookie', support.normalUserCookie)
+            .end(function(err, res) {
+            	should.not.exist(err);
+            	res.status.should.equal(410);
+            	res.body.message.should.equal('帖子不存在或者已经删除');
+            	done();
+            })
+    	});
+
+    	it('should delete topic if the operator is the author of topic', function(done) {
+    		request.post('/topic/' + support.topic._id + '/delete')
+            .set('Cookie', support.normalUserCookie)
+            .end(function(err, res) {
+            	should.not.exist(err);
+            	res.status.should.equal(200);
+            	res.body.message.should.equal('删除成功');
+            	done();
+            })
+    	});
     })
 });
 

@@ -25,7 +25,7 @@ exports.getTopicById = function(id, callback) {
 		//  如果没有找到该话题，所有返回信息都为空
 		if (!topic) {
 			ep.emit('author', null);
-			ep.emit('topic', null);
+			return ep.emit('topic', null);
 		}
 		ep.emit('topic', topic);
 		UserProxy.getUserById({'_id': topic.author_id}, function(err, user) {
@@ -43,3 +43,19 @@ exports.newAndSave = function(title, content, author_id, callback) {
 
 	topic.save(callback);
 };
+
+exports.getCountByQuery = function() {
+
+}
+
+exports.getTopicsByQuery = function() {
+
+}
+
+exports.getFullTopic = function() {
+
+}
+
+exports.getTopic = function() {
+
+}

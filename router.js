@@ -45,7 +45,7 @@ router.get('/topic/create', auth.userRequired, topic.showCreate);
 router.post('/topic/create', auth.userRequired, topic.create);
 router.get('/topic/:tid', topic.index);
 router.get('/topic/:tid/edit', auth.userRequired, topic.showEdit);
-router.post('/topic/:tid/delete', auth.userRequired, topic.delete)
+router.post('/topic/:tid/delete', auth.userRequired, topic.deleteTopic);
 router.post('/topic/:tid/up', auth.userRequired, topic.up); // 为评论点赞
 
 // 评论

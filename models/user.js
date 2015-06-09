@@ -24,6 +24,7 @@ var UserSchema = new Schema({
     collect_topic_count: {type: Number, default: 0},
     create_at: {type: Date, default: Date.now},
     update_at: {type: Date, default: Date.now},
+    is_admin: {type: Boolean, default: false}
 });
 
 UserSchema.plugin(BaseModel);
