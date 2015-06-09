@@ -27,15 +27,21 @@ exports.add = function(req, res, next) {
 			errCode: 422,
 			message: errMessage
 		}
+		res.json(data);
 	})
-	if (content === '') {
-		return eq.emit('empty-message', '评论内容不能为空')
+	if (!content.length) {
+		return ep.emit('empty-message', '评论内容不能为空')
 	}
 	// 数据库中新增一条评论
 	Comment.newAndSave(content, topic_id, author_id, comment_id, function(err, comment) {
 		if (err) {
 			return next();
 		}
+
+		Comment.getCommentById(comment._id, function(err, comment) {
+			console.log(comment)
+		})
+
 		var proxy = new eventproxy();
 		proxy.all('update-topic', 'update-user', function(topic) {
 			res.status(200);
@@ -70,8 +76,15 @@ exports.update = function(req, res, next) {
 
 };
 
+/*
+ * 删除一条评论
+ * - 必须是作者或者才能删除
+ */ 
 exports.delete = function(req, res, next) {
+	var cid = req.params.cid;
+	var author_id = req.session.user._id;
 
+	
 };
 
 exports.up = function(req, res, next) {

@@ -43,4 +43,3 @@ exports.newAndSave = function(title, content, author_id, callback) {
 
 	topic.save(callback);
 };
-

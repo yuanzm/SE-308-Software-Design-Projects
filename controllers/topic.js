@@ -72,3 +72,53 @@ exports.delete = function(req, res, next) {
 
 	var topicId = validator.trim(req.body.tid);
 };
+
+/*
+ * 为某一个话题点赞
+ * - 查询某个用户是否在点在列表里面，如果在，删除该用户，如果不在，添加该用户
+ */
+exports.up = function(req, res, next) {
+	var uper_id = req.session.user._id;
+	var cid = req.params.tid;
+
+	var ep = new eventproxy();
+	ep.fail(next);
+
+	ep.on('up-err', function(status, errMessage) {
+		res.status(status);
+		data = {
+			errCode: status,
+			message: errMessage
+		}
+		res.json(data);
+	})
+	Topic.getTopicById(cid, function(err, topic, author) {
+		if (err) {
+
+		}
+		// 状态码410表示消失了
+		if (!topic) {
+			return ep.emit('up-err', 410, '该话题不存在');
+		}
+		var index = topic.ups.indexOf(uper_id);
+
+		if (index > -1) {
+			topic.ups.slice(index, 1);
+		} else {
+			topic.ups.push(uper_id);
+		}
+		// 501: 无法满足这个要求
+		topic.save(function(err, topic) {
+			if (err) {
+				return ep.emit('up-err', 501, '数据库错误');
+			}
+			res.status(200);
+			data = {
+				errCode: 200,
+				message: '点赞操作成功',
+				total: topic.ups.length
+			}
+			res.json(data);
+		});
+	})
+}

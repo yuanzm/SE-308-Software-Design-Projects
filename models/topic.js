@@ -15,7 +15,8 @@ var TopicSchema = new Schema({
     create_at: {type: Date, default: Date.now},
     update_at: {type: Date, default: Date.now},
     deleted: {type: Boolean, default: false},
-    collect_count: {type: Number, default: 0}
+    collect_count: {type: Number, default: 0},
+    ups: [Schema.Types.ObjectId]
 });
 
 TopicSchema.plugin(BaseModel);

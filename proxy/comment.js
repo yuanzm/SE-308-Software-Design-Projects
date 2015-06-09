@@ -18,6 +18,9 @@ exports.newAndSave = function(content, topic_id, author_id, comment_id, callback
     comment.topic_id = topic_id;
     comment.author_id = author_id;
     comment.comment_id = comment_id;
-
     comment.save(callback);
+}
+
+exports.getCommentById = function(id, callback) {
+	Comment.findOne({"_id": id}, callback);
 }
