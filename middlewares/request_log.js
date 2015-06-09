@@ -5,7 +5,6 @@ module.exports = function(req, res, next) {
         next();
         return;
     }
-    console.log(req.session)
     var t = new Date();
     logger.log('\nStarted', t.toISOString(), req.method, req.url, req.ip);
 

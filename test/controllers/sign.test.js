@@ -1,9 +1,9 @@
-var app = require('../app');
+var app = require('../../app');
 var request = require('supertest')(app);
-var config = require('../config');
+var config = require('../../config');
 var should = require("should");
-var UserProxy = require('../proxy/user');
-var models = require('../models');
+var UserProxy = require('../../proxy/user');
+var models = require('../../models');
 var User   = models.User;
 
 describe('test/controllers/sign.test.js', function() {

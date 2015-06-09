@@ -67,5 +67,8 @@ exports.showEdit = function(req, res, next) {
 };
 
 exports.delete = function(req, res, next) {
+	var ep = new eventproxy();
+	ep.fail(next);
 
+	var topicId = validator.trim(req.body.tid);
 };

@@ -1,10 +1,10 @@
-var app = require('../app');
+var app = require('../../app');
 var request = require('supertest')(app);
-var config = require('../config');
+var config = require('../../config');
 var should = require("should");
 var mm = require('mm');
 var pedding = require('pedding');
-var support = require('./support/support');
+var support = require('./../support/support');
 
 describe('test/controllers/user.test.js', function() {
 	var male = 'male';

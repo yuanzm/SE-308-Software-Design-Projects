@@ -51,7 +51,9 @@
     "errorhandler": "1.2.2",
     "mocha": "2.0.1",
     "should": "4.1.0",
-    "supertest": "0.14.0"
+    "supertest": "0.14.0",
+    "istanbul": "0.3.2",
+    "nock": "1.4.0"
   },
   "keywords": [
     "[\"node\"",
