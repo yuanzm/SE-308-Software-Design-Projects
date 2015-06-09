@@ -34,9 +34,7 @@ describe('test/controllers/user.test.js', function() {
 				done(err);
 			});
 		});
-		before(function() {
-			console.log('user cookie is: ', support.normalUserCookie);
-		})
+		
 		it('should update settings successful', function(done) {
 			request.post('/setting')
 			.set('Cookie', support.normalUserCookie)

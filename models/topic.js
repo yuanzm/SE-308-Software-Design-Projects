@@ -15,8 +15,7 @@ var TopicSchema = new Schema({
     create_at: {type: Date, default: Date.now},
     update_at: {type: Date, default: Date.now},
     deleted: {type: Boolean, default: false},
-    tab: {type: String},
-    collect_count: {type: Number}
+    collect_count: {type: Number, default: 0}
 });
 
 TopicSchema.plugin(BaseModel);

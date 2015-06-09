@@ -17,11 +17,4 @@ describe('test/proxy/user.test.js', function() {
 			})
 		})
 	});
-
-	describe('add', function() {
-		it('should return 3', function() {
-			(1 + 2).should.equal(3);			
-			// User.add(1, 2).should.equal(3);
-		})
-	})
 });

@@ -41,7 +41,8 @@ router.get('/user/:name/comments', user.listComments);
 router.get('/my/messages', auth.userRequired, message.index);
 
 // 话题
-router.get('/topic/create', auth.userRequired, topic.create)
+router.get('/topic/create', auth.userRequired, topic.showCreate);
+router.post('/topic/create', topic.create);
 router.get('/topic/:tid', topic.index);
 router.get('/topic/:tid/edit', auth.userRequired, topic.showEdit);
 router.post('/topic/:tid/delete', auth.userRequired, topic.delete)
