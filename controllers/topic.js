@@ -64,6 +64,64 @@ exports.create = function(req, res, next) {
 
 };
 
+/*
+ * 更新一篇帖子
+ * - 只有存在的帖子才能更新
+ * - 只有用户本身或者管理员才有权限更新帖子
+ * - 修改帖子的最后更新时间
+ */
+
+exports.update = function(req, res, next) {
+	var ep = new eventproxy();
+	ep.fail(next);
+
+	var title = validator.trim(req.body.title);
+	title = validator.escape(title);
+	var content = validator.trim(req.body.content);
+	content = validator.escape(content);
+	var user_id = req.session.user._id;
+	var tid = req.params.tid;
+
+	ep.on('update_err', function(status, errMessage) {
+		res.status(status);
+		data = {
+			errCode: status,
+			message: errMessage
+		}
+		res.json(data);
+	});
+
+	if (tid.length != 24) {
+		return ep.emit('update_err', 410, '帖子不存在或者已经删除');
+	}
+
+	Topic.getTopicById(tid, function(err, topic, author) {
+		if (!topic) {
+			return ep.emit('update_err', 410, '帖子不存在或者已经删除');
+		}
+
+		if (!(topic.author_id.equals(user_id)) && !req.session.user.is_admin) {
+			return ep.emit('update_err', 403, '没有权限');
+		}
+
+		topic.title = title;
+		topic.content = content;
+		topic.update_at = new Date();
+
+		topic.save(function(err) {
+			if (err) {
+				return ep.emit('update_err', 500, '内部错误');
+			}
+			res.status(200);
+			data = {
+				errCode: 200,
+				message: '更新成功'
+			}
+			res.json(data);
+		})
+	})
+}
+
 exports.index = function(req, res, next) {
 
 };

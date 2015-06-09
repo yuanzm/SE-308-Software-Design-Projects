@@ -100,6 +100,53 @@ describe('test/controllers/topic.test.js', function() {
             	done();
             })
     	});
-    })
+    });
+
+	describe('topic update', function() {
+    	it('should not update topic if the operator is not the author of topic', function(done) {
+    		request.post('/topic/' + support.topic._id + '/update')
+            .set('Cookie', support.normalUser2Cookie)
+            .send({
+            	title: 'test content',
+            	content: 'test content'
+            })
+            .end(function(err, res) {
+            	should.not.exist(err);
+            	res.status.should.equal(403);
+            	res.body.message.should.equal('没有权限');
+            	done();
+            })
+    	});
+
+    	it('should delete the topic if it is not exist', function(done) {
+    		request.post('/topic/' + 'testtid'  + '/update')
+            .set('Cookie', support.normalUserCookie)
+            .send({
+            	title: 'test content',
+            	content: 'test content'
+            })
+            .end(function(err, res) {
+            	should.not.exist(err);
+            	res.status.should.equal(410);
+            	res.body.message.should.equal('帖子不存在或者已经删除');
+            	done();
+            })
+    	});
+
+    	it('should delete topic if the operator is the author of topic', function(done) {
+    		request.post('/topic/' + support.topic._id + '/update')
+            .set('Cookie', support.normalUserCookie)
+            .send({
+            	title: 'test content',
+            	content: 'test content'
+            })
+            .end(function(err, res) {
+            	should.not.exist(err);
+            	res.status.should.equal(200);
+            	res.body.message.should.equal('更新成功');
+            	done();
+            })
+    	});
+    });
 });
 

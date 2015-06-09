@@ -56,6 +56,9 @@ exports.getFullTopic = function() {
 
 }
 
-exports.getTopic = function() {
-
+/*
+ * 根据id查询一条帖子
+ */
+exports.getTopic = function(id, callback) {
+	Topic.findOne({'_id': id}, callback);
 }
