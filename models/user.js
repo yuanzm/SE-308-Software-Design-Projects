@@ -22,6 +22,7 @@ var UserSchema = new Schema({
     follwer_count: {type: Number, default: 0},
     follwing_count: {type: Number, default: 0},
     collect_topic_count: {type: Number, default: 0},
+    be_collect_topic_count: {type: Number, default: 0},
     create_at: {type: Date, default: Date.now},
     update_at: {type: Date, default: Date.now},
     is_admin: {type: Boolean, default: false}

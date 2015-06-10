@@ -4,21 +4,20 @@
  * MIT Licensed
  */
 
-var express = require("express");
-var auth = require('./middlewares/auth');
-var limit = require('./middlewares/limit');
-var site = require("./controllers/site");
-var sign = require("./controllers/sign");
-var user = require("./controllers/user");
-var message = require('./controllers/message');
-var topic = require('./controllers/topic');
-var comment = require('./controllers/comment');
-var search = require('./controllers/search');
+var express 		 = require("express");
+var auth 			 = require('./middlewares/auth');
+var limit 			 = require('./middlewares/limit');
+var site 			 = require("./controllers/site");
+var sign 			 = require("./controllers/sign");
+var user 			 = require("./controllers/user");
+var message 		 = require('./controllers/message');
+var topic 			 = require('./controllers/topic');
+var comment 		 = require('./controllers/comment');
+var search 			 = require('./controllers/search');
+var topic_collect 	 = require('./controllers/topic_collect');
 var staticController = require('./controllers/static');
-var config = require('./config');
-
+var config 			 = require('./config');
 var router           = express.Router();
-
 // home page
 router.get('/', site.index);
 
@@ -48,6 +47,10 @@ router.get('/topic/:tid/edit', auth.userRequired, topic.showEdit);
 router.post('/topic/:tid/update', auth.userRequired, topic.update);
 router.post('/topic/:tid/delete', auth.userRequired, topic.deleteTopic);
 router.post('/topic/:tid/up', auth.userRequired, topic.up); // 为评论点赞
+
+// 收藏
+router.post('/topic/:tid/collect', auth.userRequired, topic_collect.collect); // 收藏操作
+router.post('/topic/:tid/de_collect', auth.userRequired, topic_collect.de_collect); // 收藏操作
 
 // 评论
 // limit.peruserperday('create_reply', config.create_reply_per_day)

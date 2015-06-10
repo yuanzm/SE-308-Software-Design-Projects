@@ -53,7 +53,12 @@ exports.signUp = function(req, res, next) {
             if (err) {
                 return next(err);
             }
-            res.send('sign up success');
+            res.status(200);
+            data = {
+                errCode: 200,
+                message: '注册成功'
+            }
+            res.json(data);
         })
     })
 }
