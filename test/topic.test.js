@@ -118,7 +118,7 @@ describe('test/controllers/topic.test.js', function() {
             })
     	});
 
-    	it('should delete the topic if it is not exist', function(done) {
+    	it('should update the topic if it is not exist', function(done) {
     		request.post('/topic/' + 'testtid'  + '/update')
             .set('Cookie', support.normalUserCookie)
             .send({
@@ -133,7 +133,37 @@ describe('test/controllers/topic.test.js', function() {
             })
     	});
 
-    	it('should delete topic if the operator is the author of topic', function(done) {
+        it('should not update the topic if title is empty', function(done) {
+            request.post('/topic/' + support.topic._id + '/update')
+            .set('Cookie', support.normalUserCookie)
+            .send({
+                title: '',
+                content: 'test content'
+            })
+            .end(function(err, res) {
+                should.not.exist(err);
+                res.status.should.equal(422);
+                res.body.message.should.equal('标题或者内容不能为空');
+                done();
+            })
+        });
+
+        it('should not update the topic if content is empty', function(done) {
+            request.post('/topic/' + support.topic._id + '/update')
+            .set('Cookie', support.normalUserCookie)
+            .send({
+                title: 'test title',
+                content: ''
+            })
+            .end(function(err, res) {
+                should.not.exist(err);
+                res.status.should.equal(422);
+                res.body.message.should.equal('标题或者内容不能为空');
+                done();
+            })
+        });
+
+    	it('should update topic if the operator is the author of topic', function(done) {
     		request.post('/topic/' + support.topic._id + '/update')
             .set('Cookie', support.normalUserCookie)
             .send({
@@ -149,4 +179,3 @@ describe('test/controllers/topic.test.js', function() {
     	});
     });
 });
-

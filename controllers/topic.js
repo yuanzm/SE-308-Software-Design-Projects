@@ -91,6 +91,10 @@ exports.update = function(req, res, next) {
 		res.json(data);
 	});
 
+	if(!title.length || !content.length) {
+		return ep.emit('update_err', 422, '标题或者内容不能为空');
+	}
+
 	if (tid.length != 24) {
 		return ep.emit('update_err', 410, '帖子不存在或者已经删除');
 	}

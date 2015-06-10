@@ -72,8 +72,58 @@ exports.add = function(req, res, next) {
 	});	
 };
 
+/*
+ * 修改一条评论
+ * - 必须是管理员和评论者本身才有权限
+ * - 评论内容不能为空
+ * - 评论必须存在
+ */
 exports.update = function(req, res, next) {
+	var ep = new eventproxy();
+	ep.fail(next);
 
+	var content = validator.trim(req.body.content);
+	content = validator.escape(content);
+	var cid = req.params.cid;
+	var user_id = req.session.user._id;
+
+	ep.on('update_err', function(status, errMessage) {
+		res.status(status);
+		data = {
+			errCode: status,
+			message: errMessage
+		}
+		res.json(data);
+	});
+
+	if (!content.length) {
+		return ep.emit('update_err', 422, '评论内容不能为空');
+	}
+
+	if (cid.length !== 24) {
+		return ep.emit('update_err', 410, '该评论不存在或者已经删除');
+	}
+
+	Comment.getCommentById(cid, function(err, comment) {
+		if (!comment) {
+			return ep.emit('update_err', 410, '该评论不存在或者已经删除');
+		}
+		if (!(comment.author_id.equals(user_id)) && !req.session.user.is_admin) {
+			return ep.emit('update_err', 403, '没有权限');
+		}
+		comment.content = content;
+		comment.save(function(err) {
+			if (err) {
+				return ep.emit('update_err', 500, '内部错误');
+			}
+			res.status(200);
+			data = {
+				errCode: 200,
+				message: '更新成功'
+			}
+			res.json(data);
+		});
+	});
 };
 
 /*
@@ -84,9 +134,5 @@ exports.delete = function(req, res, next) {
 	var cid = req.params.cid;
 	var author_id = req.session.user._id;
 
-	
+		
 };
-
-exports.up = function(req, res, next) {
-    
-} 

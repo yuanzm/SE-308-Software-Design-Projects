@@ -14,7 +14,7 @@ describe('test/controllers/topic.test.js', function() {
         support.ready(done);
     })
 
-    describe('comment', function() {
+    describe('comment create', function() {
         it('should create a comment successful', function(done) {
             request.post('/' + support.topic._id + '/comment')
             .set('Cookie', support.normalUserCookie)
@@ -41,5 +41,62 @@ describe('test/controllers/topic.test.js', function() {
                 done();
             });
         });
+    });
+    describe('comment update', function() {
+        it('should not update a comment if operator is not author of the comment', function(done) {
+            request.post('/comment/' + support.comment._id + '/update')
+            .set('Cookie', support.normalUserCookie)
+            .send({
+                content: content
+            })
+            .end(function(err, res) {
+                res.status.should.equal(403);
+                should.not.exist(err);
+                res.text.should.containEql('没有权限');
+                done();
+            })
+        });
+        it('should not update a comment if the content is empty', function(done) {
+            request.post('/comment/' + support.comment._id + '/update')
+            .set('Cookie', support.normalUser2Cookie)
+            .send({
+                content: ''
+            })
+            .end(function(err, res) {
+                res.status.should.equal(422);
+                should.not.exist(err);
+                res.text.should.containEql('评论内容不能为空');
+                done();
+            })
+        });
+
+        it('should not update a comment if the comment is not exist', function(done) {
+            request.post('/comment/' + 'test_cid' + '/update')
+            .set('Cookie', support.normalUser2Cookie)
+            .send({
+                content: content
+            })
+            .end(function(err, res) {
+                res.status.should.equal(410);
+                should.not.exist(err);
+                res.text.should.containEql('该评论不存在或者已经删除');
+                done();
+            })
+        });
+
+        it('should update a comment if operator is the author of the topic', function(done) {
+            request.post('/comment/' + support.comment._id + '/update')
+            .set('Cookie', support.normalUser2Cookie)
+            .send({
+                content: content
+            })
+            .end(function(err, res) {
+                should.not.exist(err);
+                res.status.should.equal(200);
+                res.body.message.should.equal('更新成功');
+                done();
+            })
+        });
+
     });
 });
