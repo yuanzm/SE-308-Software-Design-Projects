@@ -8,7 +8,7 @@ var Comment = require('../proxy').Comment;
  * 新增一条评论
  * 	- 保存该评论到数据库
  *	- 话题的评论数加1
- *	- 话题作者的评论数加1，分数加1
+ *	- 话题作者的评论数加1，分数加5
  */
 exports.add = function(req, res, next) {
 	var ep = new eventproxy();
@@ -38,10 +38,6 @@ exports.add = function(req, res, next) {
 			return next();
 		}
 
-		Comment.getCommentById(comment._id, function(err, comment) {
-			console.log(comment)
-		})
-
 		var proxy = new eventproxy();
 		proxy.all('update-topic', 'update-user', function(topic) {
 			res.status(200);
@@ -61,7 +57,7 @@ exports.add = function(req, res, next) {
 			})
 
 			author.score += 1;
-			author.comment_count += 1;
+			author.comment_count += 3;
 			author.save(function(err) {
 				if (err) {
 					return next();
@@ -128,11 +124,57 @@ exports.update = function(req, res, next) {
 
 /*
  * 删除一条评论
- * - 必须是作者或者才能删除
+ * - 必须是评论者本身或者管理员才能删除
+ * - 必须删除存在的评论
+ * - 评论者的评论总量减1
+ * - 评论者的分数减5
  */ 
 exports.delete = function(req, res, next) {
-	var cid = req.params.cid;
-	var author_id = req.session.user._id;
+	var ep = new eventproxy();
+	ep.fail(next);
 
-		
+	ep.on('delete_err', function(status, errMessage) {
+		res.status(status);
+		data = {
+			errCode: status,
+			message: errMessage
+		}
+		res.json(data);
+	});
+
+	var cid = req.params.cid;
+	var user_id = req.session.user._id;
+
+	if (cid.length != 24) {
+		return ep.emit('delete_err', 410, '评论不存在或者已经删除');
+	}
+	Comment.getCommentDetail(cid, function(err, comment, author) {
+		if (!(comment.author_id.equals(user_id)) && !req.session.user.is_admin)	{
+			return ep.emit('delete_err', 403, '没有权限');
+		}	
+
+		var proxy = new eventproxy();
+		proxy.all('comment_update', 'author_update', function() {
+			res.status(200);
+			data = {
+				errCode: 200,
+				message: '删除成功'
+			}
+			res.json(data);
+		})
+
+		if (err) {
+			return ep.emit('delete_err', 500, '内部错误');
+		}
+		if (comment.deleted) {
+			return ep.emit('delete_err', 410, '评论不存在或者已经删除');
+		} else {
+			comment.deleted = true;
+			comment.save(proxy.done('comment_update'));
+
+			author.score -= 3;
+			author.comment_count -= 1;
+			author.save(proxy.done('author_update'));
+		}
+	})
 };

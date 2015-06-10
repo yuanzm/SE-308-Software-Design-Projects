@@ -97,6 +97,38 @@ describe('test/controllers/topic.test.js', function() {
                 done();
             })
         });
+    });
+    describe('comment delete', function() {
+        it('should not delete a comment if operator is not author of the comment', function(done) {
+            request.post('/comment/' + support.comment._id + '/delete')
+            .set('Cookie', support.normalUserCookie)
+            .end(function(err, res) {
+                res.status.should.equal(403);
+                should.not.exist(err);
+                res.text.should.containEql('没有权限');
+                done();
+            })
+        });
+        it('should not update a comment if the comment is not exist', function(done) {
+            request.post('/comment/' + 'test_cid' + '/delete')
+            .set('Cookie', support.normalUser2Cookie)
+            .end(function(err, res) {
+                res.status.should.equal(410);
+                should.not.exist(err);
+                res.text.should.containEql('评论不存在或者已经删除');
+                done();
+            })
+        });
 
+        it('should delete a comment if operator is the author of the topic', function(done) {
+            request.post('/comment/' + support.comment._id + '/delete')
+            .set('Cookie', support.normalUser2Cookie)
+            .end(function(err, res) {
+                should.not.exist(err);
+                res.status.should.equal(200);
+                res.body.message.should.equal('删除成功');
+                done();
+            })
+        });
     });
 });
