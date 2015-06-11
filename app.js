@@ -78,9 +78,10 @@ app.use(require('response-time')());
 app.use(bodyParser.json({limit: '1mb'}));
 app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }));
 app.use(require('method-override')());
-app.use(require('cookie-parser')(config.session_secret));
+var cookieParser = require('cookie-parser')(config.session_secret);
+app.use(cookieParser);
 app.use(compress());
-app.use(session({
+var session = session({
     secret: config.session_secret,
     store: new RedisStore({
         port: config.redis_port,
@@ -88,7 +89,8 @@ app.use(session({
     }),
     resave: true,
     saveUninitialized: true,
-}));
+})
+app.use(session);
 
 app.use(passport.initialize());
 
@@ -139,11 +141,25 @@ if (config.debug) {
     });
 }
 
-app.listen(config.port, function () {
+// 配置socket.io
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
+server.listen(config.port, function () {
     logger.log("NodeClub listening on port %d", config.port);
     logger.log("God bless love....");
     logger.log("You can debug your app with http://" + config.host + ':' + config.port);
     logger.log("");
+});
+
+io.use(function(socket, next) {
+    session(socket.handshake, {}, next);
+});
+
+io.on('connection', function (socket) {
+    socket.on('connection name',function(user){
+        io.sockets.emit('new user', user.name + " has joined.");
+    })
 });
 
 module.exports = app;
