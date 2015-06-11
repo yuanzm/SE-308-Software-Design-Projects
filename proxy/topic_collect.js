@@ -30,3 +30,42 @@ exports.remove = function(user_id, topic_id, callback) {
 exports.getCollectByUserId = function(user_id, topic_id, callback) {
 	TopicCollect.findOne({'user_id': user_id, 'topic_id': topic_id}, callback);
 }
+
+/*
+ * 根据查询条件查询收藏对应的话题
+ * @param {Object} query: 查询条件
+ * @param {Object} opt: 查询限制
+ * callback
+ *	- topics: 根据查询条件查询到的一组话题
+ */
+exports.getCollectTopicByQuery = function(query, opt, callback) {
+	TopicCollect.find(query, {}, opt, function(err, collects) {
+		if (err) {
+			callback(err);
+		}
+		if (!collects) {
+			callback(null, null);
+		}
+		var ep = new eventproxy();
+		ep.fail(callback)
+		var topics = [];
+		var length = collects.length;
+
+		ep.after('one-topic-push-done', length, function() {
+			callback(null, topics);
+		})
+
+		ep.on('one-topic', function(topic, author) {
+			var oneTopic = {
+				topic: topic,
+				author: author
+			}
+			topics.push(oneTopic);
+			ep.emit('one-topic-push-done')
+		})
+
+		for(var i = 0;i < length;i++) {
+			TopicProxy.getTopicById(collects[i].topic_id, ep.done('one-topic'))
+		}
+	});
+}

@@ -35,7 +35,7 @@ router.get('/user/:name', user.index);	// 显示用户个人中心
 router.get('/setting', user.showSetting);	// 显示用户设置中心
 router.post('/setting', auth.userRequired, user.setting);	// 更新用户设置请求	
 router.get('/user/:name/collections', user.listCollectedTopics);	// 显示用户的收藏列表
-router.get('/user/:name/topics', user.listTopics);	// 显示用户的话题列表
+// router.get('/user/:name/topics', user.listTopics);	// 显示用户的话题列表
 router.get('/user/:name/comments', user.listComments);	// 显示用户的评论列表
 
 // 消息

@@ -47,8 +47,11 @@ exports.newAndSave = function(title, content, author_id, callback) {
 	topic.save(callback);
 };
 
-exports.getCountByQuery = function() {
-
+/*
+ * 根据用户的id查询一个用户的所有标题
+ */
+exports.getUserTopicCountById = function(author_id, callback) {
+	Topic.find({"author_id": author_id}, callback);
 }
 
 /*

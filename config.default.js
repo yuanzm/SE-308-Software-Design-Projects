@@ -23,6 +23,8 @@ var config = {
 
     // 话题列表显示的话题数量
     list_topic_count: 20,
+    // 评论页面单页的评论量
+    list_comment_count: 20,
 
     host: "localhost",
 

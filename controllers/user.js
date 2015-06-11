@@ -2,8 +2,11 @@
 var eventproxy     = require('eventproxy');
 var User = require('../proxy').User;
 var Topic = require('../proxy').Topic;
+var Comment = require('../proxy').Comment;
+var TopicCollect = require('../proxy').TopicCollect;
 var crypto = require('crypto');
 var validator = require('validator');
+var config = require('../config');
 
 /*
  * 显示用户的基本信息
@@ -11,9 +14,6 @@ var validator = require('validator');
  * - 用户最近推送的话题
  */
 exports.index = function(req, res, next) {
-    var ep = new eventproxy();
-    ep.fail(next);
-
     var loginname = req.params.name;
     User.getUserByLoginName(loginname, function(err, user) {
         if (err) {
@@ -39,6 +39,133 @@ exports.index = function(req, res, next) {
         })
     })  
 };
+
+/*
+ * 显示某个用户的话题收藏列表
+ */ 
+exports.listCollectedTopics = function(req, res, next) {
+    var loginname = req.params.name;
+    var page = req.query.page? req.query.page: 1; 
+    var pages;
+    var collectionList;
+    var limit = config.list_topic_count;
+
+    User.getUserByLoginName(loginname, function(err, user) {
+
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.render404('该用户不存在');
+        }
+
+        var query = {'user_id': user._id};
+        var opt = {limit: 10, sort: '-update_at'}
+        TopicCollect.getCollectTopicByQuery(query, opt, function(err, topics) {
+            var proxy = new eventproxy();
+
+            proxy.all('pages', 'collections-load', function() {
+                res.render('user/collection', {
+                    collectionList: collectionList,
+                    user:user,
+                    currentPage: page,
+                    pages: pages
+                });
+            });
+
+            Topic.getUserTopicCountById(user._id, function(err, topics) {
+                if (err) {
+                    return next(err);
+                }
+                pages = Math.ceil(topics.length / limit);
+                proxy.emit('pages')
+            });
+
+            if (err) {
+                return next(err);
+            }
+
+            if (!topics) {
+                collectionList = [];
+                proxy.emit('collections-load');
+            } else {
+                collectionList = topics;
+                proxy.emit('collections-load');
+            }
+        })
+    })
+};
+
+/*
+ * 显示某个用户评论过的列表
+ */
+exports.listComments = function(req, res, next) {
+    var loginname = req.params.name;
+    var page = req.query.page? req.query.page: 1; 
+    var commentList = [];
+    var oneTopic;
+    var pages;
+    var limit = config.list_comment_count;
+
+    User.getUserByLoginName(loginname, function(err, user) {
+        var proxy = new eventproxy();
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.render404('该用户不存在');
+        }
+
+        proxy.all('pages', 'comments-load', function() {
+            res.render('user/comment', {
+                commentList: commentList,
+                user:user,
+                currentPage: page,
+                pages: pages
+            });
+        })
+
+        // 统计一个用户的评论总页数
+        Comment.getUserCommentCounetById(user._id, function(err, comments) {
+            if (err) {
+                return next(err);
+            }
+            pages = Math.ceil(comments.length / limit);
+            proxy.emit('pages');
+        })
+
+        var query = {'author_id': user._id};
+        var opt = {limit: 15, sort: "-create_at", $skip: 15 * (page - 1)};
+
+        Comment.getUserCommentByQuery(query, opt, function(err, comments) {
+            if (err) {
+                return next(err);
+            }
+            if (!comments) {
+                proxy.emit('comments-load');
+            } else {
+                var ep = new eventproxy();
+                var length = comments.length;
+
+                ep.after('one-topic-load',length, function() {
+                    proxy.emit('comments-load');
+                });
+
+                ep.on('one-topic', function(topic, author) {
+                    oneTopic = {
+                        topic: topic,
+                        author: author
+                    }
+                    commentList.push(oneTopic);
+                    ep.emit('one-topic-load');
+                });
+                for(var i = 0;i < length;i++) {
+                    Topic.getTopicById(comments[i].topic_id, ep.done('one-topic'));
+                }
+            }
+        })
+    })
+}
 
 exports.showSetting = function(req, res, next) {
 	res.render('index');
@@ -145,16 +272,4 @@ exports.changePassword = function(req, res, next) {
         	res.json(data);
         })
 	}))
-}
-
-exports.listCollectedTopics = function(req, res, next) {
-
-};
-
-exports.listTopics = function(req, res, next) {
-
-}
-
-exports.listComments = function(req, res, next) {
-
 }

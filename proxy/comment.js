@@ -55,3 +55,17 @@ exports.getCommentDetail = function(id, callback) {
 		}
 	})
 }
+
+/*
+ * 根据查询获取评论
+ */
+exports.getUserCommentByQuery = function(query, opt, callback) {
+	Comment.find(query, {}, opt, callback);
+}
+
+/*
+ * 根据用户的id获取评论总量
+ */
+exports.getUserCommentCounetById = function(author_id, callback) {
+	Comment.find({'author_id': author_id}, callback)
+}
