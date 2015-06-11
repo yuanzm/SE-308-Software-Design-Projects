@@ -43,6 +43,21 @@ var config = {
     create_reply_per_day: 1000, // 每个用户一天可以发的评论数
     visit_per_day: 1000, // 每个 ip 每天能访问的次数
 
+
+      // 7牛的access信息，用于文件上传
+    qn_access: {
+        accessKey: 'nx36IiBDak_OnvaUMqyl2X3jxku_vANNL9N_ymGc',
+        secretKey: '7iWmhVopCL0THV8jXoGC1XLtQe6KtSM5o2BTGK-K',
+        bucket: 'live-chat',
+        domain: 'http://live-chat.qiniudn.com'
+    },
+
+    // 文件上传配置
+    // 注：如果填写 qn_access，则会上传到 7牛，以下配置无效
+    upload: {
+        path: path.join(__dirname, 'public/upload/'),
+        url: '/public/upload/'
+    },
 }
 
 if (process.env.NODE_ENV === 'test') {

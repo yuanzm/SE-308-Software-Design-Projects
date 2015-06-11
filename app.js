@@ -31,7 +31,7 @@ var requestLog          = require('./middlewares/request_log');
 var errorhandler        = require('errorhandler');
 var renderMiddleware    = require('./middlewares/render');
 var logger              = require("./common/logger");
-
+var busboy              = require('connect-busboy');
 // 静态文件目录
 var staticDir = path.join(__dirname, 'public');
 
@@ -121,11 +121,11 @@ app.use(function (req, res, next) {
     next();
 });
 
-// app.use(busboy({
-//   limits: {
-//     fileSize: 10 * 1024 * 1024 // 10MB
-//   }
-// }));
+app.use(busboy({
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB
+  }
+}));
 
 app.use('/', router);
 

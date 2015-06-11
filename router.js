@@ -16,6 +16,7 @@ var comment 		 = require('./controllers/comment');
 var search 			 = require('./controllers/search');
 var topic_collect 	 = require('./controllers/topic_collect');
 var staticController = require('./controllers/static');
+var upload 			 = require('./controllers/upload');
 var config 			 = require('./config');
 var router           = express.Router();
 // home page
@@ -63,5 +64,8 @@ router.get('/search', search.index);
 
 // 静态页面
 router.get('/about', staticController.about);
+
+// 上传文件
+router.post('/upload', auth.userRequired, upload.upload);
 
 module.exports = router;
