@@ -1,6 +1,6 @@
 exports.errorPage = function(req, res, next) {
     res.render404  = function(error) {
-        return res.status(404).render('notify/notify', { error: error });
+        return res.status(404).render('404', { error: error });
     }
 
     res.renderError = function (error, statusCode) {

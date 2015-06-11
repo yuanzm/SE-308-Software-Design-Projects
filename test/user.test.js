@@ -54,4 +54,28 @@ describe('test/controllers/user.test.js', function() {
 			})
 		})
 	});
+
+	describe('user index', function() {
+		it('should visit 404page if user not exist', function(done) {
+			request.get('/user' + '/testUser')
+			.expect(404)
+			.end(function(err, res) {
+				should.not.exist(err);
+				res.status.should.equal(404);
+				done();
+			})
+		});
+		before(function() {
+			console.log(support.normalUser._id)
+		})
+		it('should visit user page', function(done) {
+			request.get('/user/' + support.normalUser.loginname)
+			.expect(200)
+			.end(function(err, res) {
+				should.not.exist(err);
+				res.text.should.containEql('个人中心');
+				done();
+			})
+		})
+	});
 });

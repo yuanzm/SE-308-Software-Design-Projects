@@ -1,11 +1,43 @@
 // 引入所需模块
 var eventproxy     = require('eventproxy');
 var User = require('../proxy').User;
+var Topic = require('../proxy').Topic;
 var crypto = require('crypto');
 var validator = require('validator');
 
+/*
+ * 显示用户的基本信息
+ * - 用户的基本信息
+ * - 用户最近推送的话题
+ */
 exports.index = function(req, res, next) {
+    var ep = new eventproxy();
+    ep.fail(next);
 
+    var loginname = req.params.name;
+    User.getUserByLoginName(loginname, function(err, user) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.render404('该用户不存在');
+        }
+        var query = {'author_id': user._id};
+        var opt = {limit: 5, sort: '-create_at'};
+        Topic.getTopicsByQuery(query, opt, function(err, topicList) {
+            if (err) {
+                return next(err);
+            }
+            if (!topicList) {
+                topicList = [];
+            }
+
+            res.render('user/index', {
+                user: user,
+                topicList: topicList
+            })
+        })
+    })  
 };
 
 exports.showSetting = function(req, res, next) {

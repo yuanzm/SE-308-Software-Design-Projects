@@ -34,6 +34,9 @@ exports.getTopicById = function(id, callback) {
 	});
 };
 
+/*
+ * 保存一条新的话题
+ */
 exports.newAndSave = function(title, content, author_id, callback) {
 	var topic = new Topic();
 
@@ -48,8 +51,11 @@ exports.getCountByQuery = function() {
 
 }
 
-exports.getTopicsByQuery = function() {
-
+/*
+ * 根据查询条件话题列表
+ */ 
+exports.getTopicsByQuery = function(query, opt, callback) {
+	Topic.find(query, {}, opt, callback);
 }
 
 exports.getFullTopic = function() {
