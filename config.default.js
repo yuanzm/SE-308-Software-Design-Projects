@@ -25,6 +25,8 @@ var config = {
     list_topic_count: 20,
     // 评论页面单页的评论量
     list_comment_count: 20,
+    // 一页通知的数量
+    list_notification_count: 20,
 
     host: "localhost",
 

@@ -11,7 +11,7 @@ var limit 			 = require('./middlewares/limit');
 var site 			 = require("./controllers/site");
 var sign 			 = require("./controllers/sign");
 var user 			 = require("./controllers/user");
-var message 		 = require('./controllers/message');
+var notification     = require('./controllers/notification');
 var topic 			 = require('./controllers/topic');
 var comment 		 = require('./controllers/comment');
 var search 			 = require('./controllers/search');
@@ -39,7 +39,7 @@ router.get('/user/:name/collections', user.listCollectedTopics);	// 显示用户
 router.get('/user/:name/comments', user.listComments);	// 显示用户的评论列表
 
 // 消息
-router.get('/my/messages', auth.userRequired, message.index);	// 显示用户的消息列表
+router.get('/my/notifications', auth.userRequired, notification.index);	// 显示用户的消息列表
 
 // 话题
 router.get('/topic/create', auth.userRequired, topic.showCreate);	// 创建一个新的话题页面

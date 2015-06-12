@@ -12,7 +12,7 @@ describe('test/controllers/topic.test.js', function() {
     before(function(done) {
         done = pedding(done, 1);
         support.ready(done);
-    })
+    });
 
     describe('comment create', function() {
         it('should create a comment successful', function(done) {
