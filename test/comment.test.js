@@ -128,7 +128,7 @@ describe('test/controllers/topic.test.js', function() {
                 res.status.should.equal(200);
                 res.body.message.should.equal('删除成功');
                 done();
-            })
+            });
         });
     });
 });
