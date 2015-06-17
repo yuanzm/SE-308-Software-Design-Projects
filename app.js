@@ -34,6 +34,7 @@ var logger              = require("./common/logger");
 var busboy              = require('connect-busboy');
 // 静态文件目录
 var staticDir = path.join(__dirname, 'public');
+var exphbs  = require('express-handlebars');
 
 // assets
 var assets    = {};
@@ -55,9 +56,8 @@ var app = express();
 
 // configuration in all env
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'html');
-app.engine('html', require('ejs-mate'));
-app.locals._layoutFile = 'layout.html';
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 app.enable('trust proxy');
 
 // Request logger 请求时间

@@ -58,7 +58,6 @@ exports.index = function(req, res, next) {
 					return next(err);
 				}
 				else {
-					console.log('11111111111111111111111111111111', currentNotification);
 					var oneNotification = {
 						notification: currentNotification,
 						sender: sender,
