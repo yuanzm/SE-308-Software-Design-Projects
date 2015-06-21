@@ -24,3 +24,4 @@ public/upload/*
 *.swp
 
 public/lib/
+public/dist/
