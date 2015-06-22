@@ -22,8 +22,8 @@ var router              = require("./router")
 var auth                     = require('./middlewares/auth');
 var errorPageMiddleware = require("./middlewares/error_page");
 // var proxyMiddleware          = require('./middlewares/proxy');
-// var RedisStore          = require('connect-redis')(session);
-var MongoStore = require('connect-mongo')(session);
+var RedisStore          = require('connect-redis')(session);
+// var MongoStore = require('connect-mongo')(session);
 var _                   = require('lodash');
 var csurf               = require('csurf');
 var compress            = require('compression');
@@ -58,8 +58,9 @@ var app = express();
 
 // configuration in all env
 app.set('views', path.join(__dirname, 'views'));
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-app.set('view engine', 'handlebars');
+app.set('view engine', 'html');
+app.engine('html', require('ejs-mate'));
+app.locals._layoutFile = 'layout.html';
 app.enable('trust proxy');
 
 // Request logger 请求时间
@@ -86,7 +87,7 @@ app.use(compress());
 
 var session = session({
   secret: config.session_secret,
-  store: new MongoStore({
+  store: new RedisStore({
     url: connection_string
   }),
   resave: true,

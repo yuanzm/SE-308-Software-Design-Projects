@@ -23,17 +23,4 @@ TopicSchema.plugin(BaseModel);
 TopicSchema.index({create_at: -1});
 TopicSchema.index({author_id: 1, create_at: -1});
 
-TopicSchema.virtual('tabName').get(function() {
-    var tab  = this.tab;
-    var pair = _.find(config.tabs, function(_pair) {
-        return _pair[0] === tab;
-    });
-
-    if (pair) {
-        return pair[1];
-    } else {
-        return '';
-    }
-});
-
 mongoose.model('Topic', TopicSchema);

@@ -43,34 +43,32 @@ exports.collect = function(req, res, next) {
 			req.session.user.collect_topic_count += 1;
 			res.json(data);
 		});
-		TopicCollect.getCollectByUserId(user_id, tid, function(err, topiccollect) {
-
-			if (topiccollect) {
-				return ep.emit('collect_err', 403, '不能重复收藏');
-			}
-		});
 
 		if (err) {
 			return ep.emit('collect_err', 500, '内部错误');
 		}
 		if (!topic) {
 			return ep.emit('collect_err', 410, '帖子不存在');
+		} else {
+			TopicCollect.getCollectByUserId(user_id, tid, function(err, topiccollect) {
+				if (topiccollect) {
+					return ep.emit('collect_err', 403, '不能重复收藏');
+				}
+				TopicCollect.newAndSave(user_id, tid, proxy.done('new_collect'))
+
+				topic.collect_count += 1;
+				topic.save(proxy.done('update_topic'));
+
+				author.be_collect_topic_count += 1;
+				author.score += 5;
+				author.save(proxy.done('update_author'));
+
+				User.getUserById(user_id, function(err, user) {
+					user.collect_topic_count += 1;
+					user.save(proxy.done('update_user'));
+				});
+			});
 		}
-
-		TopicCollect.newAndSave(user_id, tid, proxy.done('new_collect'))
-
-		topic.collect_count += 1;
-		topic.save(proxy.done('update_topic'));
-
-		author.be_collect_topic_count += 1;
-		author.score += 5;
-		author.save(proxy.done('update_author'));
-
-		User.getUserById(user_id, function(err, user) {
-			user.collect_topic_count += 1;
-			user.save(proxy.done('update_user'));
-		});
-
 	});
 }
 

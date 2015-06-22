@@ -14,9 +14,9 @@ var user 			 = require("./controllers/user");
 var notification     = require('./controllers/notification');
 var topic 			 = require('./controllers/topic');
 var comment 		 = require('./controllers/comment');
-var search 			 = require('./controllers/search');
+// var search 			 = require('./controllers/search');
 var topic_collect 	 = require('./controllers/topic_collect');
-var staticController = require('./controllers/static');
+// var staticController = require('./controllers/static');
 var upload 			 = require('./controllers/upload');
 var config 			 = require('./config');
 var router           = express.Router();
@@ -61,10 +61,10 @@ router.post('/comment/:cid/update', auth.userRequired, comment.update); // 修�
 router.post('/comment/:cid/delete', auth.userRequired, comment.delete); // 删除某评论
 
 // 搜索
-router.get('/search', search.index);
+// router.get('/search', search.index);
 
 // 静态页面
-router.get('/about', staticController.about);
+// router.get('/about', staticController.about);
 
 // 上传文件
 router.post('/upload', auth.userRequired, upload.upload);	// 上传文件请求

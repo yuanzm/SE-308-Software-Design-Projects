@@ -164,7 +164,7 @@ exports.delete = function(req, res, next) {
 		})
 
 		if (err) {
-			return ep.emit('delete_err', 500, '内部错误');
+			return next(err);
 		}
 		if (comment.deleted) {
 			return ep.emit('delete_err', 410, '评论不存在或者已经删除');
